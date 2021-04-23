@@ -1,12 +1,29 @@
 #!/bin/bash
 
-export CCACHE_DIR=/tmp/ccache
-sleep 2m # Lunch may need 2 minutes to start the build
+function tg_sendText() {
+curl -s "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+-d "parse_mode=html" \
+-d text="${1}" \
+-d chat_id=$CHAT_ID \
+-d "disable_web_page_preview=true"
+}
 
-while : # Loop to check ccache and machine status every 1 minute
+function tg_sendFile() {
+curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+}
+
+cd /tmp/rom
+export CCACHE_DIR=/tmp/ccache
+sleep 1m # Lunch may need 1 minute to start the build
+
+while : # Loop to check ccache and machine status every 10 minutes
 do
-ccache -s
-echo ''
-top -b -i -n 1
-sleep 1m
+(ccache -s && echo '' && free -h && echo '' && df -h) | tee monitor.txt
+tg_sendFile "monitor.txt"
+sleep 3s  # Those sleep times are included to prevent interference issues when sending messages/files to bot.
+
+# Save the last 25 lines of the compilation log in a file and upload to telegram.
+tail -n 25 build.txt > status.txt
+tg_sendFile "status.txt"
+sleep 10m
 done

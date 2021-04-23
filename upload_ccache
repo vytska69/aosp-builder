@@ -1,6 +1,16 @@
 #!/bin/bash
 
+function tg_sendText() {
+curl -s "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+-d "parse_mode=html" \
+-d text="${1}" \
+-d chat_id=$CHAT_ID \
+-d "disable_web_page_preview=true"
+}
+
 cd /tmp
+
+tg_sendText "Uploading ccache to Drive.."
 
 # Compress function with pigz for faster compression
 com () 
@@ -10,6 +20,6 @@ com ()
 
 time com ccache 1 # Compression level 1, its enough
 
-mkdir -p ~/.config/rclone
-echo "$rclone_config" > ~/.config/rclone/rclone.conf # Write rclone config found from env variable, so that cloud storage can be used to upload ccache
-time rclone copy ccache.tar.gz apon:ccache/ci2 -P # apon is my rclone config name (first line without [] of ~/.config/rclone/rclone.conf file from rclone setupped pc), ccache/ci2 is where ccache will be saved in my cloud, use yours one
+time rclone copy ccache.tar.gz aosp: -P # aosp is my rclone config name (first line without [] of ~/.config/rclone/rclone.conf file from rclone setup done on pc)
+
+tg_sendText "Sucessfully uploaded ccache to Drive.."
