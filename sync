@@ -13,6 +13,19 @@ curl -s "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
 -d "disable_web_page_preview=true"
 }
 
+# Set up github's priviledged access
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+echo "$id_rsa" > ~/.ssh/id_rsa
+echo "$id_rsa_pub" > ~/.ssh/id_rsa.pub
+chmod 400 ~/.ssh/id_rsa
+git config --global user.email "$user_email"
+git config --global user.name "$user_name"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+echo "$known_hosts" > ~/.ssh/known_hosts
+
+
 mkdir -p /tmp/rom # Where to sync source
 cd /tmp/rom
 
