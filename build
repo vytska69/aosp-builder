@@ -8,12 +8,12 @@ curl -s "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
 -d "disable_web_page_preview=true"
 }
 
+# My main build script. Move it to repo source
+mv /tmp/ci/build2.sh /tmp/rom/
+
 cd /tmp/rom # Depends on where source got synced.
 
-# My main build script is currently located in my device tree. Don't forget to change this if its located somewhere else for you!
-mv device/samsung/build2.sh /tmp/rom/
-
-# Give it executable permission
+# Give build script executable permission
 chmod +x ./build2.sh
 
 # Here, you must adjust the time in minutes. For my setup, repo sync takes between 8 to 11 mins. And you have to keep time to upload ccache or rom zip. ccache takes about 3 mins to upload and rom.zip takes less than 1 min. So 120 - (11 + 3 + 1) = 105 mins to allocate for build.
