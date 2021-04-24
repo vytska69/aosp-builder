@@ -8,9 +8,11 @@ curl -s "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
 -d "disable_web_page_preview=true"
 }
 
+CCACHE_FILE="$CIRRUS_BRANCH""_ccache.tar.gz"
+
 cd /tmp
 
-tg_sendText "Uploading ccache to Drive.."
+tg_sendText "Uploading $CCACHE_FILE to Drive.."
 
 # Compress function with pigz for faster compression
 com () 
@@ -20,6 +22,9 @@ com ()
 
 time com ccache 1 # Compression level 1, its enough
 
-time rclone copy ccache.tar.gz aosp: -P # aosp is my rclone config name (first line without [] of ~/.config/rclone/rclone.conf file from rclone setup done on pc)
+# Rename file before uploading
+mv ccache.tar.gz $CCACHE_FILE
+
+time rclone copy $CCACHE_FILE aosp: -P # aosp is my rclone config name (first line without [] of ~/.config/rclone/rclone.conf file from rclone setup done on pc)
 
 tg_sendText "Sucessfully uploaded ccache to Drive.."
