@@ -14,7 +14,7 @@ curl -F chat_id=$CHAT_ID -F document=@${1} -F parse_mode=markdown https://api.te
 
 cd /tmp/rom
 export CCACHE_DIR=/tmp/ccache
-sleep 1m # Lunch may need 1 minute to start the build
+sleep 2m # We don't need those useless logs during lunching. 2 mins is better.
 
 while : # Loop to check ccache and machine status every 10 minutes
 do
